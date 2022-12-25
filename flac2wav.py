@@ -1,9 +1,9 @@
 import os
 
 # flac to wav all
-# need_convert=["noise","test","test_noise","train"]
-need_convert=["train"]
-root_path="/mnt/f/workspace/AAI_project/LibriSpeech-SI/"
+need_convert=["noise","test","test-noisy","train"]
+root_path="/home/lizz_lab/cse12232433/project/aai_project/data/LibriSpeech-SI/"
+
 # for _ in need_convert:
 #     print(root_path+_+'/')
 def listdir(path, list_name,prefix_len):
