@@ -1,2 +1,8 @@
 Y.pkl
 X.pkl
+
+*.log
+*.out
+/pred
+/model_saved
+/log
