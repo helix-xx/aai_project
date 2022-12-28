@@ -140,7 +140,7 @@ class dataset(Dataset):
         audio_path = self.audio_paths[idx]
         audio = path_to_audio(audio_path)
         audio = fixed_length(audio)
-        # audio = add_noise(noise_paths=self.noisepath,wav=audio, p=0.3,SNR=15)
+        audio = add_noise(noise_paths=self.noisepath,wav=audio, p=0.3,SNR=15)
         audio = audio.to(self.device)
         if self.option == "FFT":
             data = audio_fft(audio)
