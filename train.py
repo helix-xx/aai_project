@@ -57,26 +57,27 @@ if __name__ == '__main__':
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device")
-    train_dataloader,test_dataloader = prepare_data(datapath,option,noisepath,device)
     if torch.cuda.device_count()>1:
         model = torch.nn.DataParallel(model)
     model = model.to(device)
 
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
+    optimizer = torch.optim.Adam(model.parameters(), lr=3e-4, weight_decay=1e-5)
 
     epochs = data_process.EPOCHS
     cnt=0
     for t in range(epochs//2):
         T1 =time.perf_counter()
         cnt+=1
+        train_dataloader,test_dataloader = prepare_data(datapath,option,noisepath,device)
         data_process.train(train_dataloader, model, loss_fn, optimizer, device)
         data_process.test(test_dataloader, model, loss_fn, device)
         print("epoch-{a},time used-{b}".format(a=cnt,b=time.perf_counter()-T1))
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-5)
     for t in range(epochs//2):
         T1 =time.perf_counter()
         cnt+=1
+        train_dataloader,test_dataloader = prepare_data(datapath,option,noisepath,device)
         data_process.train(train_dataloader, model, loss_fn, optimizer, device)
         data_process.test(test_dataloader, model, loss_fn, device)
         print("epoch-{a},time used-{b}".format(a=cnt,b=time.perf_counter()-T1))

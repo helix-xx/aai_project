@@ -2,6 +2,7 @@ import torch
 import torchaudio
 import os
 import resnet1D
+import resnet2D
 import sklearn
 from sklearn import preprocessing
 import pickle
@@ -55,10 +56,13 @@ def get_test_data(path):
             all_path.append(file)
     return all_path
 
-def load_model(path, device):
+def load_model(path, device, option):
     '''load trained model'''
     print("load model")
-    model = resnet1D.ResNet()
+    if option == "FFT":
+        model = resnet1D.ResNet()
+    elif option == "MelSpec":
+        model = resnet2D.ResNet()
     if device=="CPU":
         model.load_state_dict(torch.load(path, map_location=device))
     else:

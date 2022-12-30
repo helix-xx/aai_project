@@ -14,7 +14,7 @@ MANUAL_SEED = 42
 SHUFFLE_SEED = 43
 SAMPLING_RATE = 16000
 BATCH_SIZE = 512
-EPOCHS = 50
+EPOCHS = 40
 LENGTH = 4*16000
 
 # torch.random.manual_seed(MANUAL_SEED)
@@ -23,7 +23,7 @@ def rms_db(data):
     return 10 * torch.log10(mean_square)
 
 def add_noise(noise_paths,wav,p=0.3,SNR=15):
-    # if random.random()>p: return wav
+    if random.random()>p: return wav
     idx = random.randint(0,len(noise_paths)-1)
     noise = path_to_audio(noise_paths[idx])
     noise_gain_db = rms_db(wav) - rms_db(noise) - SNR
@@ -57,8 +57,8 @@ def change_speed(data):
     return fast_wav,slow_wav
 
 def normalize(data):
-    mean = np.mean(data, 0, keepdims=True)
-    std = np.std(data, 0, keepdims=True)
+    mean = torch.mean(data, dim=0, keepdims=True)
+    std = torch.std(data, dim=0, keepdims=True)
     data = (data - mean) / (std + 1e-5)
     return data
 
@@ -123,7 +123,9 @@ def audio_melspec(audio,device):
     )
     # audio = add_noise(audio,p=0.3)
     mel_spectrogram=mel_spectrogram.to(device)
-    melspec = mel_spectrogram(audio.unsqueeze(dim=-2))
+    melspec = mel_spectrogram(audio)
+    melspec = normalize(melspec)
+    melspec=melspec.unsqueeze(dim=0)
     return melspec
 
 

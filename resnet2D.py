@@ -49,7 +49,7 @@ class Bottleneck(nn.Module):
 
 # whole model for acoustic signal feature
 class ResNet(nn.Module):
-    def __init__(self, block=Bottleneck, blocks_num=[3, 4, 6, 3, 3], num_classes=250, include_top=True):
+    def __init__(self, block=Bottleneck, blocks_num=[3, 4, 6, 3, 3], num_classes=250, include_top=True, dropout=0.1):
         super(ResNet, self).__init__()
         self.include_top = include_top
         self.in_channel = 32
@@ -67,6 +67,7 @@ class ResNet(nn.Module):
         if self.include_top:
             self.avgpool = nn.AdaptiveAvgPool2d(1)
             self.fc = nn.Linear(in_features=512*block.expansion,out_features=num_classes)
+            self.dropout = nn.Dropout(dropout)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d): # normal distribution initialize the weights
@@ -119,5 +120,6 @@ class ResNet(nn.Module):
             x = self.avgpool(x)
             x = torch.flatten(x, 1)
             x = self.fc(x)
+            x = self.dropout(x)
 
         return x
